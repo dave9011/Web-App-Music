@@ -1,0 +1,209 @@
+<!doctype html>
+
+<html>
+
+	<head>
+	
+		<title>Music Player</title>
+		
+		<meta charset="utf-8"></meta>
+		
+		<link rel="stylesheet" href="jquery-ui-1.11.4.custom/jquery-ui.min.css">
+		
+		<link href="css/music_style.css" rel="stylesheet" type="text/css">
+		
+		<link href='https://fonts.googleapis.com/css?family=Megrim|PT+Sans+Narrow' rel='stylesheet' type='text/css'>
+		
+		<script src="js/snap.svg-min.js"></script>
+		
+		<style>
+			#rim {  stroke-dasharray: 845; } /* stroke-dashoffset: 845; */
+			#muted { stroke-dasharray: 260; }
+			#pause-shapes { opacity : 0}
+		</style>
+		
+	</head>
+	
+	<body class="clearfix">
+	
+		<div id="loading">LOADING</div>
+	
+		<div class="decor_lines" style="top: 0; width: 63%; transform-origin: 0% 50%; transform: rotateZ(28deg); left: 50%;"> </div>
+		<div class="decor_lines" style="top: 10%; width: 75%; transform-origin: 100% 50%; transform: rotateZ(-56deg); right: 0;"> </div>
+	
+		<div id="info_wrapper" class="clearfix">
+			<h1 id="artist_name"></h1>
+			<div id="albums_wrapper">
+				<div>
+					<h2>Albums</h2>
+					<div id="albums_list"></div>
+				</div>
+				<div id="album_info"></div>
+			</div>
+		
+			<div id="songs_list_wrapper">
+				<h2>Tracks</h2>
+				<div class="songs_list"></div>
+				<div class="songs_list" style="display: none;"></div>
+			</div>
+	
+			<div id="wrapper">
+			
+				<div id="album_cover"></div>
+			
+				<div id="player_controls_wrapper">
+				
+					<div id="controls_flex">
+						<svg version="1.1" id="play-button" x="0px" y="0px" viewBox="0 0 300 300" enable-background="new 0 0 300 300" xml:space="preserve">
+								<circle id="rim" fill="none" stroke="#B7B7B7" stroke-width="12" stroke-miterlimit="10" cx="150" cy="150" r="134.3"/>
+								<circle id="bg" display="none" fill="#1DD36F" cx="150" cy="150" r="130.5"/>
+								<g id="pause-shapes">
+									<rect x="99.9" y="88.5" fill="none" stroke="#E53C3C" stroke-width="10" stroke-linejoin="round" stroke-miterlimit="10" width="31.5" height="123.1"/>
+									<rect x="168.6" y="88.5" fill="none" stroke="#E53C3C" stroke-width="10" stroke-linejoin="round" stroke-miterlimit="10" width="31.5" height="123.1"/>
+								</g>
+								<g id="play-shapes">
+									<polygon id="shape-1" fill="none" stroke="#1DD36F" stroke-width="12" stroke-miterlimit="10" points="118,93.8 215.8,150.3 118,206.7 	"/>
+								</g>				
+							</svg>
+							<svg version="1.1" id="sound-button" x="0px" y="0px" viewBox="0 0 300 300" enable-background="new 0 0 300 300" xml:space="preserve">
+							<polyline id="speaker" fill="none" stroke="#B7B7B7" stroke-width="14" stroke-linejoin="round" stroke-miterlimit="10" points="
+								38,174 38,124 89.9,124 129,68.8 129,231.2 92.7,182 70,182 "/>
+							<g id="waves">
+								<path id="high-wave" fill="#D4D5D4" d="M240.4,260.3L240.4,260.3c-4.4-1.6-6.7-6.3-5.2-10.7c21.8-66.1,21.8-133.1,0-199.2
+									c-1.4-4.4,0.9-9.2,5.2-10.7l0,0c4.5-1.6,9.5,0.8,11,5.4c22.9,69.7,22.9,140.2,0,209.9C249.9,259.5,244.9,261.9,240.4,260.3z"/>
+								<path id="medium-wave" fill="#D4D5D4" d="M201.1,221.9L201.1,221.9c-4.4-1.5-6.6-6.3-5.3-10.7c12.8-40.6,12.8-81.7,0-122.4
+									c-1.4-4.4,0.9-9.1,5.3-10.7l0,0c4.5-1.6,9.6,0.8,11,5.4c13.9,44.1,13.9,88.7,0,132.9C210.6,221,205.6,223.5,201.1,221.9z"/>
+								<path id="low-wave" fill="#D4D5D4" d="M167.4,181.9L167.4,181.9c-4.2-1.5-6.5-6-5.4-10.3c3.9-14.5,3.9-28.8,0-43.3
+									c-1.1-4.3,1.2-8.8,5.4-10.3l0,0c4.8-1.7,9.9,1.1,11.2,6c4.5,17.3,4.5,34.6,0,51.9C177.3,180.8,172.1,183.6,167.4,181.9z"/>
+							</g>
+							<line id="muted" fill="none" stroke="#E52E40" stroke-width="15" stroke-linecap="round" stroke-linejoin="round" stroke-miterlimit="10" x1="38" y1="87" x2="260" y2="214"/>
+						</svg>
+						<svg version="1.1" id="loop-button" x="0px" y="0px" viewBox="0 0 360 360" enable-background="new 0 0 360 360" xml:space="preserve">
+							<polyline fill="none" stroke="#1DD36F" stroke-width="11" stroke-linecap="round" stroke-linejoin="round" stroke-miterlimit="10" points="
+								152.1,248.4 189.2,248.4 137,163.4 84.7,244.1 126.2,244.1 125.9,284.3 233,284.3 285.5,203.6 "/>
+							<polyline fill="none" stroke="#1DD36F" stroke-width="11" stroke-linecap="round" stroke-linejoin="round" stroke-miterlimit="10" points="
+								208.4,111.6 171.2,111.6 223.5,196.6 275.7,115.9 234.2,115.9 234.6,75.7 127.4,75.7 74.5,156.4 "/>
+						</svg>
+					</div>
+				
+					<div id="audioplayer" class="clearfix">
+						<div id="timeline">
+							<div id="playhead">
+								<div id="timer">0:00</div>
+							</div>
+						</div>
+					</div>
+					
+					<div id="volume_controls" class="clearfix">
+						<!-- <img src="ic/speaker.svg"> -->
+						
+						<div id="master"></div>
+					</div>
+					
+					<audio id="music" controls="controls"></audio>
+					
+				</div>
+			
+			</div>
+			
+		</div>
+		
+		<script src="jquery-ui-1.11.4.custom/external/jquery/jquery.js"></script>
+		<script src="jquery-ui-1.11.4.custom/jquery-ui.min.js"></script>
+		<script src="js/jquery.ui.touch-punch.min.js"></script>
+		
+		<script src="js/id3.js"></script>
+		
+		<script src="js/script_01.js"></script>
+		
+		<script>
+		
+			var s = Snap("#play-button"),
+				volume = Snap('#sound-button'),
+				cr = document.getElementById('bg'),
+				shape = s.select('#shape-1'),
+				rim = s.select('#rim'),
+				play = s.select('#play-shapes'),
+				pause = s.select('#pause-shapes'),
+				mute = volume.select('#muted'),
+				low_wave = volume.select('#low-wave'),
+				med_wave = volume.select('#medium-wave'),
+				high_wave = volume.select('#high-wave');
+				
+			var reverse = false;
+			
+			function transformPlayButton(){
+				if(!app.source_set){
+					return;
+				}
+				reverse === false ? turnPause() : turnPlay();
+				reverse = !reverse;
+			}	
+			
+			function turnPlay(){			
+				
+				rim.stop().animate( { 'stroke-dashoffset' : 845} , 450, function(){
+					rim.stop().animate( { 'stroke-dashoffset' : 0} , 450, function(){
+					});
+				});
+				pause.stop().animate({ opacity: 0}, 400, function(){ 
+					play.stop().animate({ opacity: 1}, 0); 
+				});	
+				
+			}
+			
+			function turnPause(){	
+				
+				rim.stop().animate( { 'stroke-dashoffset' : 845} , 450, function(){
+					rim.stop().animate( { 'stroke-dashoffset' : 0} , 450, function(){
+					});
+				});
+				play.stop().animate({ opacity: 0}, 400, function(){ 
+					pause.stop().animate({ opacity: 1}, 0); 
+				});	
+						
+			}
+			
+			function setVolumeSVG() {
+				var volume = music.volume;
+				if(volume == 0){
+					mute.stop().animate({'stroke-dashoffset' : 0}, 400);
+					low_wave.stop().animate({fill:'#D4D5D4'}, 400);
+					med_wave.stop().animate({fill:'#D4D5D4'}, 400);
+					high_wave.stop().animate({fill:'#D4D5D4'}, 400);
+					return;
+				} 
+				mute.animate({'stroke-dashoffset' : 260}, 400);
+				if ( volume <= 0.33) {
+					low_wave.stop().animate({fill:'#1DD36F'}, 400);
+					med_wave.stop().animate({fill:'#D4D5D4'}, 400);
+					high_wave.stop().animate({fill:'#D4D5D4'}, 400);
+					return;
+				} else if ( volume <= 0.66) {
+					low_wave.stop().animate({fill:'#1DD36F'}, 400);
+					med_wave.stop().animate({fill:'#1DD36F'}, 400);
+					high_wave.stop().animate({fill:'#D4D5D4'}, 400);
+					return;
+				} else {
+					low_wave.stop().animate({fill:'#1DD36F'}, 400);
+					med_wave.stop().animate({fill:'#1DD36F'}, 400);
+					high_wave.stop().animate({fill:'#1DD36F'}, 400);
+					return;
+				}
+			}
+			
+			$( window ).load(function() {
+				setVolumeSVG();
+				$('#loading').fadeOut(1500, function(){
+					$('#info_wrapper').css('opacity', 1);
+				});
+			});
+			
+			
+		
+		</script>
+	
+	</body>
+	
+
+</html>
